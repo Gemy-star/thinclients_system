@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %} الصفحة الرئسية || Thin Clients {% endblock title %}
+
+{% block body %}
+      <section id="home">
+    <div class="hero-container" data-aos="fade-in">
+      <h1>منظومة العمل للأجهزه الحاسوبية</h1>
+      <h2>رؤية مصر 2030</h2>
+      <img src="{% static 'images/hero.png' %}" style="width:44%" alt="Hero Imgs" data-aos="zoom-out" data-aos-delay="100">
+        {% if request.user.first_name %}
+                          <a href="{% url 'all-units' %}" class="btn-get-started scrollto">لوحة التحكم</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="btn-get-started scrollto">إنطلق</a>
+        {% endif %}
+      <div class="btns">
+        <a href="#"><i class="fa fa-apple fa-3x"></i> App Store</a>
+        <a href="#"><i class="fa fa-play fa-3x"></i> Google Play</a>
+        <a href="#"><i class="fa fa-windows fa-3x"></i> windows</a>
+      </div>
+    </div>
+  </section>
+
+
+{% endblock body %}

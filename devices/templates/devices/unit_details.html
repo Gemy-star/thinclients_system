@@ -1,0 +1,426 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %} تفاصيل الوحده {% endblock title %}
+{% block style %}
+    <style>
+        .page-item.active .page-link {
+            border-radius: 5px;
+
+        }
+
+        .page-link {
+            color: #dbd6d6 !important;
+        }
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: #dbd6d6;
+            color: #000000;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+            text-align: center;
+
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #dbd6d6;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #dbd6d6;
+        }
+
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #dbd6d6;
+        }
+    </style>
+{% endblock style %}
+{% block body %}
+    <main id="main">
+        <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
+            <div style="display:flex; flex-direction:row;">
+                <i data-bs-toggle="modal" data-bs-target="#createModal" class="fa fa-plus-circle" aria-hidden="true"
+                   style="color:#0a58ca;display:flex; order: 1; font-size: 40px;"></i>
+            </div>
+            <table class="table styled-table" style="width: 90%;">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">اسم الوحدة</th>
+                    <th scope="col">الأسم القصير</th>
+                    <th scope="col">CDB</th>
+                    <th scope="col">EPG</th>
+                    <th scope="col">الأعداد المستلمه</th>
+                    <th scope="col">الأعداد المنتهيه</th>
+                    <th scope="col">الأعداد المتبقية</th>
+                    <th scope="col"> DataBase Zone</th>
+                    <th scope="col"> DataBase Name</th>
+                    <th scope="col"> الحالة</th>
+                    <th scope="col"> ادخل بواسطة</th>
+                    <th scope="col"></th>
+                    <th scope="col" rowspan="2">اجمالى نسبة 25%</th>
+                    <th scope="col" rowspan="2">اجمالى نسبة 50%</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for device in clients %}
+                    <tr>
+                    <th scope="row">{{ device.pk }}</th>
+                    <td>{{ device.unit.name }}</td>
+                    <td>{{ device.short_name }}</td>
+                    <td>{{ device.cdb }}</td>
+                    <td>{{ device.epg }}</td>
+                    <td>{{ device.total_devices }}</td>
+                    <td>{{ device.devices_done }}</td>
+                    <td>{{ device.remain_devices }}</td>
+                    <td>{{ device.database_zone }}</td>
+                    <td>{{ device.database_name }}</td>
+                    <td>{{ device.unit.status }}</td>
+                    <td>{{ device.added_by.first_name }}</td>
+
+                    <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
+                                                                     data-bs-target="#deleteModal"
+                                                                     id="{{ device.pk }}"
+                                                                     style="color:#a52834; font-size:29px; margin-inline: 0.3rem;"
+                                                                     class="fa fa-trash-o sara_delete"
+                                                                     aria-hidden="true"></i>
+                        <i data-bs-toggle="modal" data-bs-target="#updateModal"
+                           style="color:#55b03f; font-size:29px;" id="{{ device.pk }}"
+                           class="fa fa-pencil-square-o sara_edit" aria-hidden="true"></i>
+                    </td>
+                {% endfor %}
+                {% for val in per25 %}
+                    <td rowspan="0">{{ val }}</td>
+                {% endfor %}
+                {% for val in per50 %}
+                    <td rowspan="0">{{ val }}</td>
+                {% endfor %}
+
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"> تاكيد الإزالة</h5>
+                </div>
+                <div class="modal-body">
+                    هل تريد الأزالة
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">غلق</button>
+                    <button type="button" class="btn btn-danger" id="btn_delete">تأكيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel"> تعديل </h5>
+                </div>
+                <div class="modal-body" id="edit_body">
+                    <form>
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="short_name" id="short_name"
+                                   placeholder="اسم القصير"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="cdb" id="cdb" placeholder="CDB"/>
+                        </div>
+
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="epg" id="epg" placeholder="EPG"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="database_zone" id="database_zone"
+                                   placeholder="Database Zone "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="database_name" id="database_name"
+                                   placeholder="Database Zone "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="total_devices" id="total_devices"
+                                   placeholder="الاجهزه المستلمة "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="devices_done" id="devices_done"
+                                   placeholder="الأجهزه المنتهية"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="per50_up" id="per50_up"
+                                   placeholder="نسبة 50%"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="per25_up" id="per25_up"
+                                   placeholder="نسبة 25%"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                    <button type="button" class="btn btn-success" id="btn_update">تأكيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel"> إضافة </h5>
+                </div>
+                <div class="modal-body" id="add_body">
+                    <form>
+                        {% csrf_token %}
+
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="short_name_add" id="short_name_add"
+                                   placeholder="اسم القصير"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="cdb_add" id="cdb_add" placeholder="CDB"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="epg_add" id="epg_add" placeholder="EPG"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="database_zone_add" id="database_zone_add"
+                                   placeholder="Database Zone "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="database_name_add" id="database_name_add"
+                                   placeholder="Database Zone "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="total_devices_add" id="total_devices_add"
+                                   placeholder="الاجهزه المستلمة "/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="devices_done_add" id="devices_done_add"
+                                   placeholder="الأجهزه المنتهية"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="per50_add" id="per50_add"
+                                   placeholder="نسبة 50%"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="per25_add" id="per25_add"
+                                   placeholder="نسبة 25%"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                    <button type="button" class="btn btn-primary" id="btn_add">إضافة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+
+{% block javascript %}
+    <script>
+        var delete_id;
+        var update_id;
+        var updated_item;
+
+        $(() => {
+            $('i.sara_edit').click(function () {
+                update_id = $(this).attr('id');
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url 'get_thin' %}',
+                    data: {
+                        'id': update_id,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        var JsData = JSON.parse(data.data)
+                        updated_item = JsData[0].fields
+                        $("#name_up").val(`${updated_item.unit.name}`);
+                        $("#status_up").val(`${updated_item.unit.status}`);
+                        $("#units").val(`${update_id}`);
+                        $("#cdb").val(`${updated_item.cdb}`);
+                        $("#epg").val(`${updated_item.epg}`);
+                        $("#short_name").val(`${updated_item.short_name}`);
+                        $("#total_devices").val(`${updated_item.total_devices}`);
+                        $("#devices_done").val(`${updated_item.devices_done}`);
+                        $("#database_name").val(`${updated_item.database_name}`);
+                        $("#database_zone").val(`${updated_item.database_zone}`);
+                        $("#per25_up").val(`${updated_item.twinte_five_percentgy}`);
+                        $("#per50_up").val(`${updated_item.fifty_percentgy}`);
+
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+
+            });
+
+            $('i.sara_delete').click(function () {
+                delete_id = $(this).attr('id');
+                console.log("delete", delete_id);
+
+            });
+            $("#btn_delete").on('click', e => {
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url 'delete_thin' %}',
+                    data: {
+                        'id': delete_id,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.data === 1) {
+                            swal({
+                                title: "تم",
+                                text: "تم  بنجاح",
+                                icon: "success",
+                                button: "إغلاق",
+                            });
+                            window.location.href = "{% url 'unit-detail' pk %}"
+                        } else {
+                            swal({
+                                title: "خطا",
+                                text: "من فضلك راجع البيانات",
+                                icon: "error",
+                                button: "إغلاق",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+            });
+            $("#btn_update").on('click', event => {
+                event.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url 'update_thin' %}',
+                    data: {
+                        'update_id': update_id,
+                        'name': $("#name_up").val(),
+                        'status': $("#status_up").val(),
+                        'cdb': $("#cdb").val(),
+                        'epg': $("#epg").val(),
+                        'per25': $("#per25_up").val(),
+                        'per50': $("#per50_up").val(),
+
+                        'units': $("#units").val(),
+                        'database_name': $("#database_name").val(),
+                        'database_zone': $("#database_zone").val(),
+                        'devices_done': $("#devices_done").val(),
+                        'total_devices': $("#total_devices").val(),
+                        'short_name': $("#short_name").val(),
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.data === 1) {
+                            swal({
+                                title: "تم",
+                                text: "تم  بنجاح",
+                                icon: "success",
+                                button: "إغلاق",
+                            });
+                            window.location.href = "{% url 'unit-detail' pk %}"
+                        } else {
+                            swal({
+                                title: "خطا",
+                                text: "من فضلك راجع البيانات",
+                                icon: "error",
+                                button: "إغلاق",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+
+            });
+
+            $("#btn_add").on('click', e => {
+                e.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url 'create_thin' %}',
+                    data: {
+                        'pk': {{pk}},
+                        'name': $("#name_add").val(),
+                        'status': $("#status_add").val(),
+                        'cdb': $("#cdb_add").val(),
+                        'epg': $("#epg_add").val(),
+                        'per25': $("#per25_add").val(),
+                        'per50': $("#per50_add").val(),
+                        'database_name': $("#database_name_add").val(),
+                        'database_zone': $("#database_zone_add").val(),
+                        'devices_done': $("#devices_done_add").val(),
+                        'total_devices': $("#total_devices_add").val(),
+                        'short_name': $("#short_name_add").val(),
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.data === 1) {
+                            swal({
+                                title: "تم",
+                                text: "تم  بنجاح",
+                                icon: "success",
+                                button: "إغلاق",
+                            });
+                            window.location.href = "{% url 'unit-detail' pk %}"
+                        } else {
+                            swal({
+                                title: "خطا",
+                                text: "من فضلك راجع البيانات",
+                                icon: "error",
+                                button: "إغلاق",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+
+            })
+
+        });
+
+    </script>
+
+{% endblock javascript %}

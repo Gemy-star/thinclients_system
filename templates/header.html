@@ -1,0 +1,30 @@
+{% load static %}
+
+
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+        <div id="logo">
+          <img src="{% static 'images/logo.png' %}" style="width:40px; height:40px;"/>
+        </div>
+
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link scrollto active" href="{% url 'home_page' %}">الرئيسية</a></li>
+                <li><a class="nav-link scrollto active" href="{% url 'all-units' %}">الوحدات</a></li>
+
+                <li><a class="nav-link scrollto" href="{% url 'reports' %}">التقارير</a></li>
+{#                <li><a class="nav-link scrollto" href="{% url 'features' %}">الأهداف</a></li>#}
+                <li><a class="nav-link scrollto" href="{% url 'contact' %}">إتصل بنا</a></li>
+                {% if request.user.first_name %}
+                    <li><a class="nav-link scrollto" href="{% url 'logout' %}"><i style="font-size:large;" class="fa fa-power-off" aria-hidden="true"></i></a></li>
+                    {% else %}
+                                        <li><a class="nav-link scrollto" href="{% url 'login' %}">تسجيل الدخول</a></li>
+                                                            <li><a class="nav-link scrollto" href="{% url 'register' %}">إنشاء حساب</a></li>
+
+                {% endif %}
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+    </div>
+</header>

@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block title %}متابعة سير العمل  {% endblock title %}
+
+{% block body %}
+
+    <main id="main">
+    <section id="get-started" class="padd-section text-center">
+
+        <div class="container" data-aos="fade-up">
+            <div class="section-title text-center">
+
+                <h2 style="color:#85775f">لوحة التحكم </h2>
+                <p class="separator"></p>
+
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+
+
+                                <div class="col-md-6 col-lg-6" data-aos="zoom-in" data-aos-delay="200">
+                  <a href="{% url 'report_unit' %}">
+                    <div class="feature-block">
+
+
+                        <img src="{% static 'images/dell_client.png' %}" alt="img" style="width: 49%;height: 15%;">
+
+                       <h4 style="color:#85775f">  تقرير العمل اليومى  للوحدات</h4>
+
+                    </div>
+                      </a>
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </section>
+    </main>
+
+{% endblock body %}

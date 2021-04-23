@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<head>
+
+    <title>{{ title }}</title>
+    <style type="text/css">
+
+
+        .header {
+            font-size: 20px;
+            font-weight: 100;
+            text-align: center;
+            color: #51585e;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 100;
+            /* text-align: right;*/
+            padding: 10px 20px 0px 20px;
+        }
+
+        .title span {
+            color: #51585e;
+        }
+
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: right !important;
+            /*margin-left: 40%;*/
+        }
+
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333;
+            /* old IE */
+            background-color: #fff;
+            /* Modern Browsers */
+        }
+
+        @font-face {
+            font-family: RTLFont;
+            src: url('../static/fonts/helveticaneuelt-arabic-55-roman.ttf')
+        }
+
+        body {
+            font-weight: 200;
+            font-size: 14px;
+            font-family: RTLFont;
+        }
+
+        table {
+            border: 1px solid #666666;
+            border-collapse: collapse;
+            border-color: #ccc;
+        }
+
+        td, th {
+            border: 1px solid #666666;
+            font-size: 11px;
+            line-height: 13px;
+            border-bottom: 1px solid #666666;
+            vertical-align: top;
+            padding: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class='wrapper'>
+    <div class='header'>
+        <pdf:language name="arabic"/>
+        <h3> {{ company }}</h3>
+    </div>
+    <div>
+        <div class='details'>
+            <pdf:language name="arabic"/>
+            جمهورية مصر العربيه
+            <br>
+            منظومة العمل اليومى للأنظمة Thin Clients
+            <br>
+            التاريخ : {{ today }}
+            <br>
+
+            <hr class='hrItem'/>
+           <h3 class="details">اسم الوحدة :  {{ unit.name }}</h3>
+                        <p class="details">الحالة :  {{ unit.status }}</p>
+
+                        <hr class='hrItem'/>
+            <h3 class="header"> {{ topic }}</h3>
+            <br>
+            <div class="body">
+
+
+                <table style="width:100%">
+                    <tr>
+                        <th>اسم الأدارة</th>
+                        <th>عدد الأجهزة</th>
+                        <th>عدد المتبقى</th>
+                        <th>عدد المنتهى</th>
+                        <th>Database Name</th>
+                        <th>Database Zone</th>
+                                                <th> EPG</th>
+                        <th>CDB</th>
+                        <th>Category</th>
+
+
+                    </tr>
+
+                    {% for dev in devices %}
+                        <tr>
+                            <td>{{ dev.unit.name }}</td>
+                            <td>{{ dev.total_devices }}</td>
+                                                        <td>{{ dev.remain_devices }}</td>
+                            <td>{{ dev.devices_done }}</td>
+                            <td>{{ dev.database_zone }}</td>
+                            <td>{{ dev.epg }}</td>
+                            <td>{{ dev.cdb }}</td>
+                            <td>{{ dev.cdb }}</td>
+                            <td>{{ dev.category }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+            <hr class='hrItem'/>
+
+            <div class="card">
+                <div class="card-body">
+                    انشاء بواسطة:
+                    {{ user.first_name }} {{ user.last_name }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

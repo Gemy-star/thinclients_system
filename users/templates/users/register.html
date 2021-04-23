@@ -1,0 +1,68 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block title %} إنشاء حساب || Register {% endblock title %}
+
+{% block body %}
+
+
+    <main id="main">
+    <section id="contact" class="padd-section">
+
+        <div class="container" data-aos="fade-up">
+            <div class="section-title text-center">
+                <h2>إنشاء حساب</h2>
+                <p class="separator">الجيش المصرى</p>
+            </div>
+
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="col-lg-3 col-md-4">
+
+                           <img src="{% static 'images/register.png' %}" style="width: 82%;height:auto;" alt="Hero Imgs" data-aos="zoom-out" data-aos-delay="100">
+
+
+
+
+                </div>
+
+                <div class="col-lg-5 col-md-8">
+                    <div class="form">
+                        <form  method="post" role="form" class="php-email-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="number" name="national_id" class="form-control" id="national_id" placeholder="الرقم القومى" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="كلمة المرور" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="text" class="form-control" name="first_name" id="first_name" placeholder="الأسم" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="email" class="form-control" name="email" id="email" placeholder="البريد الألكترونى" required>
+                            </div>
+                                <div class="form-group mt-3">
+                                <input type="text" class="form-control" name="last_name" id="last_name" placeholder="اسم العائلة" required>
+                            </div>
+                                <div class="form-group mt-3">
+                                <input type="number" class="form-control" name="phone" id="phone" placeholder="الهاتف" required>
+                            </div>
+
+                                <div class="form-group mt-3">
+                                <input type="text" class="form-control" name="address" id="address" placeholder="العنوان" required>
+                            </div>
+     <div class="form-group mt-3">
+                            <div class="text-center"><button type="submit">إنشاء حساب</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+{% endblock body %}

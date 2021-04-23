@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %} تسجيل الدخول || Login {% endblock title %}
+
+{% block body %}
+
+    <main id="main">
+    <section id="contact" class="padd-section">
+
+        <div class="container" data-aos="fade-up">
+  <div class="section-title text-center">
+                <h2>تسجيل الدخول </h2>
+                <p class="separator"></p>
+            </div>
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="col-lg-3 col-md-4">
+
+                        <img style="width:45%;" src="{% static 'images/login.png' %}" alt="Hero Imgs" data-aos="zoom-out" data-aos-delay="100">
+
+
+                </div>
+
+                <div class="col-lg-5 col-md-8">
+                    <div class="form">
+                        <form  method="post" role="form" class="php-email-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="number" name="national_id" class="form-control" id="national_id" placeholder="الرقم القومى" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="كلمة المرور" required>
+                            </div>
+
+     <div class="form-group mt-3">
+                            <div class="text-center"><button type="submit">الدخول</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+
+{% endblock body %}
