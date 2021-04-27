@@ -66,6 +66,9 @@
                     <th scope="col">#</th>
                     <th scope="col">اسم الوحدة</th>
                     <th scope="col">الحالة</th>
+                                        <th scope="col">الكود</th>
+                    <th scope="col">العدد الكلى</th>
+
                                      <th scope="col"></th>
                     <th scope="col"></th>
 
@@ -77,6 +80,8 @@
                         <th scope="row">{{ unit.pk }}</th>
                         <td>{{ unit.name }}</td>
                         <td>{{ unit.status }}</td>
+                        <td>{{ unit.code }}</td>
+                        <td>{{ unit.total }}</td>
 
 <td> <a class="btn-sm btn-primary" href="{% url 'unit-detail' unit.pk %}">التفاصيل</a></td>
                         <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
@@ -143,7 +148,14 @@
 
                       </select>
                </div>
-
+   <div class="form-group">
+                            <input type="number" class="form-control" name="code_up" id="code_up"
+                                   placeholder="الكود"/>
+                        </div>
+                       <div class="form-group">
+                            <input type="number" class="form-control" name="total_up" id="total_up"
+                                   placeholder="العدد الكلى"/>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -183,6 +195,14 @@
 
                       </select>
                </div>
+                          <div class="form-group">
+                            <input type="number" class="form-control" name="code_add" id="code_add"
+                                   placeholder="الكود"/>
+                        </div>
+                          <div class="form-group">
+                            <input type="number" class="form-control" name="total_add" id="total_add"
+                                   placeholder="العدد الكلى"/>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -272,6 +292,9 @@
                         'update_id': update_id,
                         'name': $("#name_up").val(),
                         'status': $("#status_up").val(),
+                                                'code': $("#code_up").val(),
+                        'total': $("#total_up").val(),
+
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
@@ -307,6 +330,9 @@
                     data: {
                         'name': $("#name_add").val(),
                         'status': $("#status_add").val(),
+                                                'code': $("#code_add").val(),
+                        'total': $("#total_add").val(),
+
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {

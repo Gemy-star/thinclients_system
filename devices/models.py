@@ -66,6 +66,9 @@ class ThinUnits(models.Model):
     )
     status = models.CharField(max_length=255, blank=True, choices=STATUS_CHOICES, null=True)
     name = models.CharField(max_length=255, null=True, blank=True, choices=NAME_CHOICES, unique=True)
+    code = models.IntegerField(blank=True, null=True)
+    total = models.IntegerField( blank=True,  null=True)
+
 
     def __str__(self):
         return self.name

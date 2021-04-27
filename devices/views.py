@@ -89,10 +89,14 @@ def update_unit(request):
     if request.method == "POST" and request.is_ajax:
         update_id = request.POST.get('update_id')
         name = request.POST.get('name')
+        code = request.POST.get('code')
+        total = request.POST.get('total')
         status = request.POST.get('status')
         thin = ThinUnits.objects.get(pk=update_id)
         thin.name = name
         thin.status = status
+        thin.code = code
+        thin.total = total
         thin.save()
         return JsonResponse({"data": 1})
 
@@ -127,7 +131,9 @@ def create_unit(request):
     if request.method == "POST" and request.is_ajax:
         name = request.POST.get('name')
         status = request.POST.get('status')
-        thin = ThinUnits(name=name, status=status)
+        code = request.POST.get('code')
+        total = request.POST.get('total')
+        thin = ThinUnits(name=name, status=status, code=code, total=total)
         thin.save()
         if thin.pk:
             return JsonResponse({"data": 1})
