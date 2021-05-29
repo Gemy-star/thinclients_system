@@ -64,11 +64,8 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">اسم الوحدة</th>
+                    <th scope="col">المكان</th>
                                         <th scope="col">الكود</th>
-                                                            <th scope="col">الحالة</th>
-
-                    <th scope="col">العدد الكلى</th>
 
                                      <th scope="col"></th>
                     <th scope="col"></th>
@@ -79,12 +76,10 @@
                 {% for unit in units %}
                     <tr>
                         <th scope="row">{{ unit.pk }}</th>
-                        <td>{{ unit.total.code.name }}</td>
-                        <td>{{ unit.total.code.code }}</td>
-                        <td>{{ unit.status }}</td>
-                        <td>{{ unit.total.total }}</td>
+                        <td>{{ unit.place }}</td>
+                        <td>{{ unit.code.code }}</td>
+<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.code.pk %}">التفاصيل</a></td>
 
-<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.total.code.pk %}">التفاصيل</a></td>
                         <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
                                                                          data-bs-target="#deleteModal"
                                                                          id="{{ unit.pk }}"
@@ -130,31 +125,19 @@
                     <form>
                         {% csrf_token %}
 
-                                             <div class="form-group">
-                                <input class="form-control" list="names" name="name_up" id="name_up">
-  <datalist id="names"  >
-                     {% for value, text in unit_names %}
+<div class="form-group">
+                      <select class="form-control" id="code_up" name="code_up">
+                         {% for code in codes %}
+                          <option value="{{ code.pk }}">{{ code.name }}</option>
 
-                         <option value="{{ value}}">{{ text }}</option>
-
-                                             {% endfor %}
-  </datalist>
-               </div>
-
-
-               <div class="form-group">
-                      <select class="form-control" id="status_up" name="status_up">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
+  {% endfor %}
                       </select>
                </div>
-
-                       <div class="form-group">
-                            <input type="number" class="form-control" name="total_up" id="total_up"
-                                   placeholder="العدد الكلى"/>
+                          <div class="form-group">
+                            <input type="text" class="form-control" name="place_up" id="place_up"
+                                   placeholder="المكان"/>
                         </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -175,33 +158,17 @@
                         {% csrf_token %}
 
 
-                                                    <div class="form-group">
-                                <input class="form-control" list="names" name="name_add" id="name_add">
-  <datalist id="names"  >
-                     {% for value, text in unit_names %}
+     <div class="form-group">
+                      <select class="form-control" id="code_add" name="code_add">
+                         {% for code in codes %}
+                          <option value="{{ code.pk }}">{{ code.name }}</option>
 
-                         <option value="{{ value}}">{{ text }}</option>
-
-                                             {% endfor %}
-  </datalist>
-               </div>
-
-
-               <div class="form-group">
-                      <select class="form-control" id="status_add" name="status_add">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
+  {% endfor %}
                       </select>
                </div>
                           <div class="form-group">
-                            <input type="number" class="form-control" name="code_add" id="code_add"
-                                   placeholder="الكود"/>
-                        </div>
-                          <div class="form-group">
-                            <input type="number" class="form-control" name="total_add" id="total_add"
-                                   placeholder="العدد الكلى"/>
+                            <input type="text" class="form-control" name="place_add" id="place_add"
+                                   placeholder="المكان"/>
                         </div>
                     </form>
                 </div>
@@ -228,19 +195,16 @@
                 update_id = $(this).attr('id');
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'get_unit' %}',
+                    url: '{% url 'codePlace-id' %}',
                     data: {
                         'id': update_id,
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
-                        console.log(data.data)
                         var JsData = JSON.parse(data.data)
                         updated_item = JsData[0].fields
-                        $("#name_up").val(`${updated_item.total.code.name}`);
-                        $("#status_up").val(`${updated_item.status}`);
-                        $("#code_up").val(`${updated_item.total.code.name}`);
-                        $("#total_up").val(`${updated_item.total}`);
+                        $("#place_up").val(`${updated_item.place}`);
+                        $("#code_up").val(`${updated_item.code.pk}`);
 
                     },
                     error: function (error) {
@@ -258,7 +222,7 @@
             $("#btn_delete").on('click', e => {
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'delete_unit' %}',
+                    url: '{% url 'delete_codePlace' %}',
                     data: {
                         'id': delete_id,
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
@@ -271,7 +235,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units' %}"
+                            window.location.href = "{% url 'code-place' %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -290,13 +254,11 @@
                 event.preventDefault();
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'update_unit' %}',
+                    url: '{% url 'update_codePlace' %}',
                     data: {
                         'update_id': update_id,
-                        'name': $("#name_up").val(),
-                        'status': $("#status_up").val(),
+                        'place': $("#place_up").val(),
                                                 'code': $("#code_up").val(),
-                        'total': $("#total_up").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
@@ -308,7 +270,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units' %}"
+                            window.location.href = "{% url 'code-place' %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -329,12 +291,10 @@
                 e.preventDefault();
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'create_unit' %}',
+                    url: '{% url 'create_codePlace' %}',
                     data: {
-                        'name': $("#name_add").val(),
-                        'status': $("#status_add").val(),
+                        'place': $("#place_add").val(),
                                                 'code': $("#code_add").val(),
-                        'total': $("#total_add").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
@@ -346,7 +306,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units'  %}"
+                            window.location.href = "{% url 'code-place'  %}"
                         } else {
                             swal({
                                 title: "خطا",

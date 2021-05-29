@@ -66,9 +66,6 @@
                     <th scope="col">#</th>
                     <th scope="col">اسم الوحدة</th>
                                         <th scope="col">الكود</th>
-                                                            <th scope="col">الحالة</th>
-
-                    <th scope="col">العدد الكلى</th>
 
                                      <th scope="col"></th>
                     <th scope="col"></th>
@@ -79,12 +76,10 @@
                 {% for unit in units %}
                     <tr>
                         <th scope="row">{{ unit.pk }}</th>
-                        <td>{{ unit.total.code.name }}</td>
-                        <td>{{ unit.total.code.code }}</td>
-                        <td>{{ unit.status }}</td>
-                        <td>{{ unit.total.total }}</td>
+                        <td>{{ unit.name }}</td>
+                        <td>{{ unit.code }}</td>
+<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.pk %}">التفاصيل</a></td>
 
-<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.total.code.pk %}">التفاصيل</a></td>
                         <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
                                                                          data-bs-target="#deleteModal"
                                                                          id="{{ unit.pk }}"
@@ -142,19 +137,11 @@
                </div>
 
 
-               <div class="form-group">
-                      <select class="form-control" id="status_up" name="status_up">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
-                      </select>
-               </div>
-
-                       <div class="form-group">
-                            <input type="number" class="form-control" name="total_up" id="total_up"
-                                   placeholder="العدد الكلى"/>
+   <div class="form-group">
+                            <input type="number" class="form-control" name="code_up" id="code_up"
+                                   placeholder="الكود"/>
                         </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -186,22 +173,9 @@
   </datalist>
                </div>
 
-
-               <div class="form-group">
-                      <select class="form-control" id="status_add" name="status_add">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
-                      </select>
-               </div>
                           <div class="form-group">
                             <input type="number" class="form-control" name="code_add" id="code_add"
                                    placeholder="الكود"/>
-                        </div>
-                          <div class="form-group">
-                            <input type="number" class="form-control" name="total_add" id="total_add"
-                                   placeholder="العدد الكلى"/>
                         </div>
                     </form>
                 </div>
@@ -228,19 +202,16 @@
                 update_id = $(this).attr('id');
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'get_unit' %}',
+                    url: '{% url 'codeName-id' %}',
                     data: {
                         'id': update_id,
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
-                        console.log(data.data)
                         var JsData = JSON.parse(data.data)
                         updated_item = JsData[0].fields
-                        $("#name_up").val(`${updated_item.total.code.name}`);
-                        $("#status_up").val(`${updated_item.status}`);
-                        $("#code_up").val(`${updated_item.total.code.name}`);
-                        $("#total_up").val(`${updated_item.total}`);
+                        $("#name_up").val(`${updated_item.name}`);
+                        $("#code_up").val(`${updated_item.code}`);
 
                     },
                     error: function (error) {
@@ -258,7 +229,7 @@
             $("#btn_delete").on('click', e => {
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'delete_unit' %}',
+                    url: '{% url 'delete_codeName' %}',
                     data: {
                         'id': delete_id,
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
@@ -271,7 +242,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units' %}"
+                            window.location.href = "{% url 'code-name' %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -290,13 +261,11 @@
                 event.preventDefault();
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'update_unit' %}',
+                    url: '{% url 'update_codeName' %}',
                     data: {
                         'update_id': update_id,
                         'name': $("#name_up").val(),
-                        'status': $("#status_up").val(),
                                                 'code': $("#code_up").val(),
-                        'total': $("#total_up").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
@@ -308,7 +277,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units' %}"
+                            window.location.href = "{% url 'code-name' %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -329,12 +298,10 @@
                 e.preventDefault();
                 $.ajax({
                     method: 'POST',
-                    url: '{% url 'create_unit' %}',
+                    url: '{% url 'create_codeName' %}',
                     data: {
                         'name': $("#name_add").val(),
-                        'status': $("#status_add").val(),
                                                 'code': $("#code_add").val(),
-                        'total': $("#total_add").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
@@ -346,7 +313,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'all-units'  %}"
+                            window.location.href = "{% url 'code-name'  %}"
                         } else {
                             swal({
                                 title: "خطا",

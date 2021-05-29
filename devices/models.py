@@ -2,12 +2,7 @@ from django.db import models
 from users.models import User
 
 
-class ThinUnits(models.Model):
-    STATUS_CHOICES = (
-        ('مخزن', 'مخزن'),
-        ('جارى العمل', 'جارى العمل'),
-        ('انتهى العمل', 'انتهى العمل')
-    )
+class ThinCodeName(models.Model):
     NAME_CHOICES = (
         ('إدارة المشاة', 'إدارة المشاة'),
         ('إدارة المدرعات', 'إدارة المدرعات'),
@@ -64,18 +59,47 @@ class ThinUnits(models.Model):
         ('إدارة شؤون العاملين المدنيين', 'إدارة شؤون العاملين المدنيين'),
 
     )
-    status = models.CharField(max_length=255, blank=True, choices=STATUS_CHOICES, null=True)
-    name = models.CharField(max_length=255, null=True, blank=True, choices=NAME_CHOICES, unique=True)
+    name = models.CharField(max_length=255, null=True, blank=True, choices=NAME_CHOICES)
     code = models.IntegerField(blank=True, null=True)
-    total = models.IntegerField( blank=True,  null=True)
-
 
     def __str__(self):
         return self.name
 
 
+class ThinCodePlace(models.Model):
+    code = models.ForeignKey(ThinCodeName, on_delete=models.CASCADE)
+    place = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        self.code.name
+
+
+class ThinCodeTotal(models.Model):
+    code = models.ForeignKey(ThinCodeName, on_delete=models.CASCADE)
+    total = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        self.code.name
+
+
+class ThinUnits(models.Model):
+    STATUS_CHOICES = (
+        ('مخزن', 'مخزن'),
+        ('جارى العمل', 'جارى العمل'),
+        ('انتهى العمل', 'انتهى العمل')
+    )
+
+    status = models.CharField(max_length=255, blank=True, choices=STATUS_CHOICES, null=True)
+    total = models.ForeignKey(ThinCodeTotal, on_delete=models.CASCADE, null=True)
+    place = models.ForeignKey(ThinCodePlace, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.status
+
+
 class ThinDevicesUnits(models.Model):
     unit = models.ForeignKey(ThinUnits, on_delete=models.CASCADE, null=True)
+    code = models.ForeignKey(ThinCodeName, on_delete=models.CASCADE, null=True)
     total_devices = models.IntegerField(null=True, blank=True)
     devices_done = models.IntegerField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
@@ -85,8 +109,6 @@ class ThinDevicesUnits(models.Model):
     category = models.CharField(max_length=255, null=True, blank=True)
     database_zone = models.CharField(max_length=255, null=True, blank=True)
     database_name = models.CharField(max_length=255, null=True, blank=True)
-    fifty_percentgy = models.IntegerField(null=True, blank=True)
-    twinte_five_percentgy = models.IntegerField(null=True, blank=True)
     catoperation = models.CharField(max_length=255, null=True, blank=True)
     database_name = models.CharField(max_length=255, null=True, blank=True)
     mangloc = models.CharField(max_length=255, null=True, blank=True)
@@ -105,6 +127,20 @@ class ThinDevicesUnits(models.Model):
             return self.total_devices
         else:
             return self.total_devices - self.devices_done
+
+    @property
+    def per25(self):
+        if self.devices_done is None:
+            return self.total_devices
+        else:
+            return (self.total_devices - self.devices_done) * 25 / 100
+
+    @property
+    def per50(self):
+        if self.devices_done is None:
+            return self.total_devices
+        else:
+            return (self.total_devices - self.devices_done) * 50 / 100
 
     def __str__(self):
         return self.category

@@ -68,16 +68,19 @@
                     <th scope="col">الأسم القصير</th>
                     <th scope="col">CDB</th>
                     <th scope="col">EPG</th>
-                    <th scope="col">الأعداد المستلمه</th>
-                    <th scope="col">الأعداد المنتهيه</th>
-                    <th scope="col">الأعداد المتبقية</th>
+                    <th scope="col">العدد المستلم</th>
+                    <th scope="col">العدد المنتهى</th>
+                    <th scope="col">العدد المتبقى</th>
                     <th scope="col"> DataBase Zone</th>
                     <th scope="col"> DataBase Name</th>
                     <th scope="col"> الحالة</th>
-                    <th scope="col"> ادخل بواسطة</th>
+                    <th scope="col"> نسبة 25%</th>
+                    <th scope="col"> نسبة 50%</th>
                     <th scope="col"></th>
-                    <th scope="col" rowspan="2">اجمالى نسبة 25%</th>
-                    <th scope="col" rowspan="2">اجمالى نسبة 50%</th>
+                    <th scope="col" rowspan="2">اجمالى العدد المستلم</th>
+                    <th scope="col" rowspan="2">اجمالى العدد المنتهى</th>
+                    <th scope="col">إجمالى نسبة 25%</th>
+                    <th scope="col">إجمالى نسبة 50%</th>
 
                 </tr>
                 </thead>
@@ -85,7 +88,7 @@
                 {% for device in clients %}
                     <tr>
                     <th scope="row">{{ device.pk }}</th>
-                    <td>{{ device.unit.name }}</td>
+                    <td>{{ device.code.name }}</td>
                     <td>{{ device.short_name }}</td>
                     <td>{{ device.cdb }}</td>
                     <td>{{ device.epg }}</td>
@@ -95,7 +98,8 @@
                     <td>{{ device.database_zone }}</td>
                     <td>{{ device.database_name }}</td>
                     <td>{{ device.unit.status }}</td>
-                    <td>{{ device.added_by.first_name }}</td>
+                    <td>{{ device.per25 }}</td>
+                    <td>{{ device.per50 }}</td>
 
                     <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
                                                                      data-bs-target="#deleteModal"
@@ -108,12 +112,10 @@
                            class="fa fa-pencil-square-o sara_edit" aria-hidden="true"></i>
                     </td>
                 {% endfor %}
-                {% for val in per25 %}
-                    <td rowspan="0">{{ val }}</td>
-                {% endfor %}
-                {% for val in per50 %}
-                    <td rowspan="0">{{ val }}</td>
-                {% endfor %}
+                    <td rowspan="0">{{ total_devices }}</td>
+                    <td rowspan="0">{{ devices_done }}</td>
+                    <td rowspan="0">{{ per25 }}</td>
+                    <td rowspan="0">{{ per50 }}</td>
 
                 </tr>
 
@@ -176,13 +178,13 @@
                                    placeholder="الأجهزه المنتهية"/>
                         </div>
                         <div class="form-group">
-                            <input type="number" class="form-control" name="per50_up" id="per50_up"
-                                   placeholder="نسبة 50%"/>
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="per25_up" id="per25_up"
-                                   placeholder="نسبة 25%"/>
-                        </div>
+                      <select class="form-control" id="code_up" name="code_up">
+                         {% for code in codes %}
+                          <option value="{{ code.pk }}">{{ code.name }}</option>
+
+  {% endfor %}
+                      </select>
+               </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -230,13 +232,13 @@
                                    placeholder="الأجهزه المنتهية"/>
                         </div>
                         <div class="form-group">
-                            <input type="number" class="form-control" name="per50_add" id="per50_add"
-                                   placeholder="نسبة 50%"/>
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="per25_add" id="per25_add"
-                                   placeholder="نسبة 25%"/>
-                        </div>
+                      <select class="form-control" id="code_add" name="code_add">
+                         {% for code in codes %}
+                          <option value="{{ code.pk }}">{{ code.name }}</option>
+
+  {% endfor %}
+                      </select>
+               </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -270,7 +272,7 @@
                     success: function (data) {
                         var JsData = JSON.parse(data.data)
                         updated_item = JsData[0].fields
-                        $("#name_up").val(`${updated_item.unit.name}`);
+                        $("#name_up").val(`${updated_item.code.name}`);
                         $("#status_up").val(`${updated_item.unit.status}`);
                         $("#units").val(`${update_id}`);
                         $("#cdb").val(`${updated_item.cdb}`);
@@ -280,8 +282,6 @@
                         $("#devices_done").val(`${updated_item.devices_done}`);
                         $("#database_name").val(`${updated_item.database_name}`);
                         $("#database_zone").val(`${updated_item.database_zone}`);
-                        $("#per25_up").val(`${updated_item.twinte_five_percentgy}`);
-                        $("#per50_up").val(`${updated_item.fifty_percentgy}`);
 
                     },
                     error: function (error) {
@@ -312,7 +312,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'unit-detail' pk %}"
+                            window.location.href = "{% url 'unit-detail-code' pk %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -338,9 +338,7 @@
                         'status': $("#status_up").val(),
                         'cdb': $("#cdb").val(),
                         'epg': $("#epg").val(),
-                        'per25': $("#per25_up").val(),
-                        'per50': $("#per50_up").val(),
-
+                                                'code': $("#code_up").val(),
                         'units': $("#units").val(),
                         'database_name': $("#database_name").val(),
                         'database_zone': $("#database_zone").val(),
@@ -357,7 +355,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'unit-detail' pk %}"
+                            window.location.href = "{% url 'unit-detail-code' pk %}"
                         } else {
                             swal({
                                 title: "خطا",
@@ -385,8 +383,7 @@
                         'status': $("#status_add").val(),
                         'cdb': $("#cdb_add").val(),
                         'epg': $("#epg_add").val(),
-                        'per25': $("#per25_add").val(),
-                        'per50': $("#per50_add").val(),
+                                                'code': $("#code_add").val(),
                         'database_name': $("#database_name_add").val(),
                         'database_zone': $("#database_zone_add").val(),
                         'devices_done': $("#devices_done_add").val(),
@@ -402,7 +399,7 @@
                                 icon: "success",
                                 button: "إغلاق",
                             });
-                            window.location.href = "{% url 'unit-detail' pk %}"
+                            window.location.href = "{% url 'unit-detail-code' pk %}"
                         } else {
                             swal({
                                 title: "خطا",
