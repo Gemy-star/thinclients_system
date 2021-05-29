@@ -131,14 +131,14 @@ class ThinDevicesUnits(models.Model):
         if self.devices_done is None:
             return self.total_devices
         else:
-            return (self.total_devices - self.devices_done) * 25 / 100
+            return (self.total_devices) * 25 / 100
 
     @property
     def per50(self):
         if self.devices_done is None:
             return self.total_devices
         else:
-            return (self.total_devices - self.devices_done) * 50 / 100
+            return (self.total_devices) * 50 / 100
 
     def __str__(self):
         return self.category
