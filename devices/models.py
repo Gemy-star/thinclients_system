@@ -1,5 +1,4 @@
 from django.db import models
-from users.models import User
 
 
 class ThinCodeName(models.Model):
@@ -119,7 +118,6 @@ class ThinDevicesUnits(models.Model):
     delivery_date = models.DateField(null=True, blank=True)
     build = models.CharField(max_length=255, null=True, blank=True)
     groupwork = models.CharField(max_length=255, null=True, blank=True)
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     @property
     def remain_devices(self):

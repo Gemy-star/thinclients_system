@@ -3,7 +3,6 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import ThinUnits, ThinDevicesUnits, ThinCodeName, ThinCodeTotal, ThinCodePlace
-from users.models import User
 from thin_clients.utils import render_to_pdf
 from django.template.loader import get_template
 from datetime import datetime
@@ -146,7 +145,6 @@ def get_codeTotal_byId(request):
 def update_thin(request):
     if request.method == "POST" and request.is_ajax:
         update_id = request.POST.get('update_id')
-        user = User.objects.get(pk=request.user.pk)
         cdb = request.POST.get('cdb')
         epg = request.POST.get('epg')
         code = request.POST.get('code')
@@ -157,7 +155,6 @@ def update_thin(request):
         devices_done = request.POST.get('devices_done')
         total_devices = request.POST.get('total_devices')
         thin = ThinDevicesUnits.objects.get(pk=update_id)
-        thin.added_by = user
         thin.cdb = cdb
         thin.epg = epg
         thin.code = code_obj
@@ -226,7 +223,6 @@ def update_code_total(request):
 
 def create_thin(request):
     if request.method == "POST" and request.is_ajax:
-        user_obj = User.objects.get(pk=request.user.pk)
         pk = request.POST.get('pk')
         cdb = request.POST.get('cdb')
         epg = request.POST.get('epg')
@@ -237,7 +233,7 @@ def create_thin(request):
         database_name = request.POST.get('database_name')
         devices_done = request.POST.get('devices_done')
         total_devices = request.POST.get('total_devices')
-        thin = ThinDevicesUnits(added_by=user_obj, cdb=cdb, epg=epg, code=code_obj,
+        thin = ThinDevicesUnits(cdb=cdb, epg=epg, code=code_obj,
                                 short_name=short_name,
                                 database_name=database_name
                                 , database_zone=database_zone, devices_done=devices_done,
@@ -312,10 +308,8 @@ def report(request):
         template = get_template('uint_reports.html')
         thin = ThinUnits.objects.get(pk=pk)
         units = ThinDevicesUnits.objects.filter(unit=thin)
-        user_obj = User.objects.get(pk=request.user.pk)
         context = {
             "company": "مركز النظم و الدعم المتكامل",
-            "user": user_obj,
             "devices": units,
             "unit": thin,
             "topic": "تفاصيل العمل اليومى للوحدة  ",
