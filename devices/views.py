@@ -42,6 +42,7 @@ def unit_details_code(request, pk):
     thinclients = ThinDevicesUnits.objects.filter(code=unit)
     total_devices = total.total
     devices_done = thinclients.aggregate(Sum('devices_done'))
+    remain = total_devices - devices_done['devices_done__sum']
     if total_devices is None:
         per25 = 0
         per50 = 0
@@ -49,7 +50,7 @@ def unit_details_code(request, pk):
         per25 = int(total_devices) * 25 / 100
         per50 = int(total_devices) * 50 / 100
 
-    context = {"clients": thinclients, "pk": pk, "total_devices": total_devices, "unit": unit,
+    context = {"clients": thinclients, "pk": pk, "total_devices": total_devices, "unit": unit,"remain":remain,
                "devices_done": devices_done['devices_done__sum'], "per25": per25, "per50": per50}
     return render(request, 'devices/unit_details.html', context)
 

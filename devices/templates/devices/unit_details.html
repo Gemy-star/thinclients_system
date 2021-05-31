@@ -25,6 +25,7 @@
             background-color: #dbd6d6;
             color: #000000;
             text-align: left;
+            font-size: 10px;
         }
 
         .styled-table th,
@@ -72,18 +73,16 @@
                     <th scope="col">الأسم القصير</th>
                     <th scope="col">CDB</th>
                     <th scope="col">EPG</th>
-                    <th scope="col">العدد الكلى</th>
                     <th scope="col">تاريخ الأستلام</th>
                     <th scope="col">تاريخ التوصيل</th>
                     <th scope="col">العدد المنتهى</th>
-                    <th scope="col">العدد المتبقى</th>
                     <th scope="col"> DataBase Zone</th>
                     <th scope="col"> DataBase Name</th>
                     <th scope="col"> نسبة 25%</th>
                     <th scope="col"> نسبة 50%</th>
-                    <th scope="col"></th>
-                    <th scope="col" rowspan="2">اجمالى العدد المستلم</th>
-                    <th scope="col" rowspan="2">اجمالى العدد المنتهى</th>
+                    <th scope="col"  rowspan="2">العدد الكلى</th>
+                    <th scope="col" rowspan="2"> العدد المنتهى</th>
+                                        <th scope="col">العدد المتبقى</th>
                     <th scope="col">إجمالى نسبة 25%</th>
                     <th scope="col">إجمالى نسبة 50%</th>
 
@@ -92,34 +91,33 @@
                 <tbody>
                 {% for device in clients %}
                     <tr>
-                    <th scope="row">{{ device.pk }}</th>
+                    <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
+                                                                     data-bs-target="#deleteModal"
+                                                                     id="{{ device.pk }}"
+                                                                     style="color:#a52834; font-size:20px; margin-inline: 0.2rem;"
+                                                                     class="fa fa-trash-o sara_delete"
+                                                                     aria-hidden="true"></i>
+                        <i data-bs-toggle="modal" data-bs-target="#updateModal"
+                           style="color:#55b03f; font-size:20px;" id="{{ device.pk }}"
+                           class="fa fa-pencil-square-o sara_edit" aria-hidden="true"></i>
+                    </td>
                     <td>{{ device.short_name }}</td>
                     <td>{{ device.cdb }}</td>
                     <td>{{ device.epg }}</td>
-                    <td>{{ device.total_devices.total }}</td>
                                         <td>{{ device.recieved_date }}</td>
                     <td>{{ device.delivery_date }}</td>
 
                     <td>{{ device.devices_done }}</td>
-                    <td>{{ device.remain_devices }}</td>
                     <td>{{ device.database_zone }}</td>
                     <td>{{ device.database_name }}</td>
                     <td>{{ device.per25 }}</td>
                     <td>{{ device.per50 }}</td>
 
-                    <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
-                                                                     data-bs-target="#deleteModal"
-                                                                     id="{{ device.pk }}"
-                                                                     style="color:#a52834; font-size:29px; margin-inline: 0.3rem;"
-                                                                     class="fa fa-trash-o sara_delete"
-                                                                     aria-hidden="true"></i>
-                        <i data-bs-toggle="modal" data-bs-target="#updateModal"
-                           style="color:#55b03f; font-size:29px;" id="{{ device.pk }}"
-                           class="fa fa-pencil-square-o sara_edit" aria-hidden="true"></i>
-                    </td>
+
                 {% endfor %}
                     <td rowspan="0">{{ total_devices }}</td>
                     <td rowspan="0">{{ devices_done }}</td>
+                    <td>{{ remain }}</td>
                     <td rowspan="0">{{ per25 }}</td>
                     <td rowspan="0">{{ per50 }}</td>
 

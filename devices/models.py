@@ -124,6 +124,7 @@ class ThinDevicesUnits(models.Model):
         else:
             return self.total_devices.total - self.devices_done
 
+
     @property
     def per25(self):
         if self.devices_done is None:
