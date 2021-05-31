@@ -11,7 +11,6 @@ urlpatterns = [
     path('get/thin', views.get_thin_byId, name='get_thin'),
     path('update/thin', views.update_thin, name='update_thin'),
     path('create/thin', views.create_thin, name='create_thin'),
-    path('unit/report', views.report, name='report_unit'),
     path('get/codeName', views.get_codeName_byId, name='codeName-id'),
     path('get/codePlace', views.get_codePlace_byId, name='codePlace-id'),
     path('get/codeTotal', views.get_codeTotal_byId, name='codeTotal-id'),
@@ -24,5 +23,8 @@ urlpatterns = [
     path('create/codeName', views.create_code_name, name='create_codeName'),
     path('create/codePlace', views.create_code_place, name='create_codePlace'),
     path('create/codeTotal', views.create_code_total, name='create_codeTotal'),
+    path('report/units', views.UnitTotal.as_view(), name='unit-total'),
+    path('report/units/place', views.UnitPlace.as_view(), name='unit-place'),
+    path('report/units/code', views.UnitNameCode.as_view(), name='unit-code'),
 
 ]

@@ -100,7 +100,6 @@
                         <th>اسم الأدارة</th>
                                                 <th>الكود </th>
 
-                        <th>عدد الأجهزة</th>
 
 
 
@@ -108,9 +107,8 @@
 
                     {% for dev in units %}
                         <tr>
-                            <td>{{ dev.code.name }}</td>
-                            <td>{{ dev.code.code }}</td>
-                            <td>{{ dev.total }}</td>
+                            <td>{{ dev.name }}</td>
+                            <td>{{ dev.code }}</td>
 
 
                         </tr>

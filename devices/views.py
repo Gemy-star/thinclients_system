@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views import View
+from users.models import User
 from .models import ThinUnits, ThinDevicesUnits, ThinCodeName, ThinCodeTotal, ThinCodePlace
 from thin_clients.utils import render_to_pdf
 from django.template.loader import get_template
@@ -286,18 +288,42 @@ def create_code_total(request):
             return JsonResponse({"data": -1})
 
 
-def report(request):
-    context = {"units": ThinUnits.objects.all()}
-    if request.method == "POST":
-        pk = request.POST.get('pk')
-        template = get_template('uint_reports.html')
-        thin = ThinUnits.objects.get(pk=pk)
-        units = ThinDevicesUnits.objects.filter(unit=thin)
+
+class UnitNameCode(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('unit_code.html')
+        units = ThinCodeName.objects.all()
+        user_obj = User.objects.get(pk=request.user.pk)
         context = {
             "company": "مركز النظم و الدعم المتكامل",
-            "devices": units,
-            "unit": thin,
-            "topic": "تفاصيل العمل اليومى للوحدة  ",
+            "user": user_obj,
+            "units": units,
+            "topic": "تفاصيل الوحدات المسجلة",
+            "today": datetime.today().strftime('%Y-%m-%d'),
+        }
+        html = template.render(context)
+        pdf = render_to_pdf('unit_code.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" % ("12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+class UnitTotal(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('uint_reports.html')
+        units = ThinCodeTotal.objects.all()
+        user_obj = User.objects.get(pk=request.user.pk)
+        context = {
+            "company": "مركز النظم و الدعم المتكامل",
+            "user": user_obj,
+            "units": units,
+            "topic": "تفاصيل الوحدات المسجلة",
             "today": datetime.today().strftime('%Y-%m-%d'),
         }
         html = template.render(context)
@@ -312,4 +338,29 @@ def report(request):
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")
-    return render(request, 'devices/filterreport.html', context=context)
+
+
+class UnitPlace(View):
+    def get(self, request, *args, **kwargs):
+        template = get_template('unit_place.html')
+        units = ThinCodePlace.objects.all()
+        user_obj = User.objects.get(pk=request.user.pk)
+        context = {
+            "company": "مركز النظم و الدعم المتكامل",
+            "user": user_obj,
+            "units": units,
+            "topic": "تفاصيل الوحدات المسجلة",
+            "today": datetime.today().strftime('%Y-%m-%d'),
+        }
+        html = template.render(context)
+        pdf = render_to_pdf('unit_place.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" % ("12341231")
+            content = "inline; filename='%s'" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
