@@ -58,7 +58,7 @@ class ThinCodeName(models.Model):
         ('إدارة شؤون العاملين المدنيين', 'إدارة شؤون العاملين المدنيين'),
 
     )
-    name = models.CharField(max_length=255, null=True, blank=True, choices=NAME_CHOICES)
+    name = models.CharField(max_length=255, null=True, blank=True, choices=NAME_CHOICES, unique=True)
     code = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -97,9 +97,8 @@ class ThinUnits(models.Model):
 
 
 class ThinDevicesUnits(models.Model):
-    unit = models.ForeignKey(ThinUnits, on_delete=models.CASCADE, null=True)
     code = models.ForeignKey(ThinCodeName, on_delete=models.CASCADE, null=True)
-    total_devices = models.IntegerField(null=True, blank=True)
+    total_devices = models.ForeignKey(ThinCodeTotal, on_delete=models.CASCADE, null=True)
     devices_done = models.IntegerField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     short_name = models.CharField(max_length=255, null=True, blank=True)
@@ -109,36 +108,35 @@ class ThinDevicesUnits(models.Model):
     database_zone = models.CharField(max_length=255, null=True, blank=True)
     database_name = models.CharField(max_length=255, null=True, blank=True)
     catoperation = models.CharField(max_length=255, null=True, blank=True)
-    database_name = models.CharField(max_length=255, null=True, blank=True)
     mangloc = models.CharField(max_length=255, null=True, blank=True)
     seprated_thin = models.CharField(max_length=255, null=True, blank=True)
     center110 = models.CharField(max_length=255, null=True, blank=True)
     center100 = models.CharField(max_length=255, null=True, blank=True)
     recieved_date = models.DateField(null=True, blank=True)
     delivery_date = models.DateField(null=True, blank=True)
-    build = models.CharField(max_length=255, null=True, blank=True)
+    build = models.ForeignKey(ThinCodePlace, on_delete=models.CASCADE, null=True)
     groupwork = models.CharField(max_length=255, null=True, blank=True)
 
     @property
     def remain_devices(self):
         if self.devices_done is None:
-            return self.total_devices
+            return self.total_devices.total
         else:
-            return self.total_devices - self.devices_done
+            return self.total_devices.total - self.devices_done
 
     @property
     def per25(self):
         if self.devices_done is None:
-            return self.total_devices
+            return self.remain_devices
         else:
-            return (self.total_devices) * 25 / 100
+            return self.remain_devices * 25 / 100
 
     @property
     def per50(self):
         if self.devices_done is None:
-            return self.total_devices
+            return self.remain_devices
         else:
-            return (self.total_devices) * 50 / 100
+            return self.remain_devices * 50 / 100
 
     def __str__(self):
         return self.category

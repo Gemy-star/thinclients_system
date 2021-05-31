@@ -55,7 +55,11 @@
 {% endblock style %}
 {% block body %}
     <main id="main">
-        <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
+      <section>
+        <div class="section-title">
+            <h3>Thin Clients</h3>
+        </div>
+                  <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
             <div style="display:flex; flex-direction:row;">
                 <i data-bs-toggle="modal" data-bs-target="#createModal" class="fa fa-plus-circle" aria-hidden="true"
                    style="color:#0a58ca;display:flex; order: 1; font-size: 40px;"></i>
@@ -78,7 +82,7 @@
                         <th scope="row">{{ unit.pk }}</th>
                         <td>{{ unit.name }}</td>
                         <td>{{ unit.code }}</td>
-<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.pk %}">التفاصيل</a></td>
+<td> <a class="btn-sm btn-primary" href="{% url 'code-total' %}">العدد الكلى</a></td>
 
                         <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
                                                                          data-bs-target="#deleteModal"
@@ -98,6 +102,8 @@
                 </tbody>
             </table>
         </div>
+
+    </section>
     </main>
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -317,7 +323,7 @@
                         } else {
                             swal({
                                 title: "خطا",
-                                text: "من فضلك راجع البيانات",
+                                text: "لقد قمت بتسجيل الأداره مسبقا",
                                 icon: "error",
                                 button: "إغلاق",
                             });

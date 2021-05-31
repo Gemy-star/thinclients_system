@@ -55,7 +55,11 @@
 {% endblock style %}
 {% block body %}
     <main id="main">
-        <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
+    <section>
+        <div class="section-title">
+            <h3>Thin Clients</h3>
+        </div>
+                <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
             <div style="display:flex; flex-direction:row;">
                 <i data-bs-toggle="modal" data-bs-target="#createModal" class="fa fa-plus-circle" aria-hidden="true"
                    style="color:#0a58ca;display:flex; order: 1; font-size: 40px;"></i>
@@ -97,6 +101,8 @@
                 </tbody>
             </table>
         </div>
+
+    </section>
     </main>
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -124,13 +130,15 @@
                     <form>
                         {% csrf_token %}
 
-<div class="form-group">
-                      <select class="form-control" id="code_up" name="code_up">
-                         {% for code in codes %}
-                          <option value="{{ code.pk }}">{{ code.name }}</option>
+                                         <div class="form-group">
+                                <input class="form-control" list="names" name="name_up" id="name_up">
+  <datalist id="names"  >
+                     {% for value, text in unit_names %}
 
-  {% endfor %}
-                      </select>
+                         <option value="{{ value}}">{{ text }}</option>
+
+                                             {% endfor %}
+  </datalist>
                </div>
                           <div class="form-group">
                             <input type="number" class="form-control" name="total_up" id="total_up"
@@ -157,14 +165,17 @@
                         {% csrf_token %}
 
 
-     <div class="form-group">
-                      <select class="form-control" id="code_add" name="code_add">
-                         {% for code in codes %}
-                          <option value="{{ code.pk }}">{{ code.name }}</option>
+                                                    <div class="form-group">
+                                <input class="form-control" list="names" name="name_add" id="name_add">
+  <datalist id="names"  >
+                     {% for value, text in unit_names %}
 
-  {% endfor %}
-                      </select>
+                         <option value="{{ value}}">{{ text }}</option>
+
+                                             {% endfor %}
+  </datalist>
                </div>
+
                           <div class="form-group">
                             <input type="number" class="form-control" name="total_add" id="total_add"
                                    placeholder="العدد الكلى"/>
@@ -203,7 +214,7 @@
                         var JsData = JSON.parse(data.data)
                         updated_item = JsData[0].fields
                         $("#total_up").val(`${updated_item.total}`);
-                        $("#code_up").val(`${updated_item.code.pk}`);
+                        $("#name_up").val(`${data.name}`);
 
                     },
                     error: function (error) {
@@ -227,7 +238,7 @@
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
-                        if (data.data === 1) {
+                        if (data.data == 1) {
                             swal({
                                 title: "تم",
                                 text: "تم  بنجاح",
@@ -257,12 +268,12 @@
                     data: {
                         'update_id': update_id,
                         'total': $("#total_up").val(),
-                                                'code': $("#code_up").val(),
+                                                'code': $("#name_up").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
-                        if (data.data === 1) {
+                        if (data.data == 1) {
                             swal({
                                 title: "تم",
                                 text: "تم  بنجاح",
@@ -293,12 +304,12 @@
                     url: '{% url 'create_codeTotal' %}',
                     data: {
                         'total': $("#total_add").val(),
-                                                'code': $("#code_add").val(),
+                        'code': $("#name_add").val(),
 
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function (data) {
-                        if (data.data === 1) {
+                        if (data.data == 1) {
                             swal({
                                 title: "تم",
                                 text: "تم  بنجاح",

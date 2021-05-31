@@ -55,18 +55,18 @@
 {% endblock style %}
 {% block body %}
     <main id="main">
-        <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
-            <div style="display:flex; flex-direction:row;">
-                <i data-bs-toggle="modal" data-bs-target="#createModal" class="fa fa-plus-circle" aria-hidden="true"
-                   style="color:#0a58ca;display:flex; order: 1; font-size: 40px;"></i>
-            </div>
+    <section>
+        <div class="section-title">
+            <h3>Thin Clients</h3>
+        </div>
+                <div id="get-started" class="padd-section text-center" style="width: 90%;margin: 8rem 7rem;">
+
             <table class="table styled-table" style="width: 90%;">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">اسم الوحدة</th>
                                         <th scope="col">الكود</th>
-                                                            <th scope="col">الحالة</th>
 
                     <th scope="col">العدد الكلى</th>
 
@@ -79,22 +79,12 @@
                 {% for unit in units %}
                     <tr>
                         <th scope="row">{{ unit.pk }}</th>
-                        <td>{{ unit.total.code.name }}</td>
-                        <td>{{ unit.total.code.code }}</td>
-                        <td>{{ unit.status }}</td>
-                        <td>{{ unit.total.total }}</td>
+                        <td>{{ unit.code.name }}</td>
+                        <td>{{ unit.code.code }}</td>
+                        <td>{{ unit.total }}</td>
 
-<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.total.code.pk %}">التفاصيل</a></td>
-                        <td style="display:flex; flex-direction:row;"><i data-bs-toggle="modal"
-                                                                         data-bs-target="#deleteModal"
-                                                                         id="{{ unit.pk }}"
-                                                                         style="color:#a52834; font-size:29px; margin-inline: 0.3rem;"
-                                                                         class="fa fa-trash-o sara_delete"
-                                                                         aria-hidden="true"></i>
-                            <i data-bs-toggle="modal" data-bs-target="#updateModal"
-                               style="color:#55b03f; font-size:29px;" id="{{ unit.pk }}"
-                               class="fa fa-pencil-square-o sara_edit" aria-hidden="true"></i>
-                        </td>
+<td> <a class="btn-sm btn-primary" href="{% url 'unit-detail-code' unit.code.pk %}">التفاصيل</a></td>
+
 
                     </tr>
 
@@ -103,268 +93,13 @@
                 </tbody>
             </table>
         </div>
+
+    </section>
     </main>
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel"> تاكيد الإزالة</h5>
-                </div>
-                <div class="modal-body">
-                    هل تريد الأزالة
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">غلق</button>
-                    <button type="button" class="btn btn-danger" id="btn_delete">تأكيد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel"> تعديل </h5>
-                </div>
-                <div class="modal-body" id="edit_body">
-                    <form>
-                        {% csrf_token %}
 
-                                             <div class="form-group">
-                                <input class="form-control" list="names" name="name_up" id="name_up">
-  <datalist id="names"  >
-                     {% for value, text in unit_names %}
-
-                         <option value="{{ value}}">{{ text }}</option>
-
-                                             {% endfor %}
-  </datalist>
-               </div>
-
-
-               <div class="form-group">
-                      <select class="form-control" id="status_up" name="status_up">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
-                      </select>
-               </div>
-
-                       <div class="form-group">
-                            <input type="number" class="form-control" name="total_up" id="total_up"
-                                   placeholder="العدد الكلى"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
-                    <button type="button" class="btn btn-success" id="btn_update">تأكيد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel"> إضافة </h5>
-                </div>
-                <div class="modal-body" id="add_body">
-                    <form>
-                        {% csrf_token %}
-
-
-                                                    <div class="form-group">
-                                <input class="form-control" list="names" name="name_add" id="name_add">
-  <datalist id="names"  >
-                     {% for value, text in unit_names %}
-
-                         <option value="{{ value}}">{{ text }}</option>
-
-                                             {% endfor %}
-  </datalist>
-               </div>
-
-
-               <div class="form-group">
-                      <select class="form-control" id="status_add" name="status_add">
-                          <option value="مخزن">مخزن</option>
-                          <option value="جارى العمل">جارى العمل</option>
-                          <option value="انتهى العمل">انتهى العمل</option>
-
-                      </select>
-               </div>
-                          <div class="form-group">
-                            <input type="number" class="form-control" name="code_add" id="code_add"
-                                   placeholder="الكود"/>
-                        </div>
-                          <div class="form-group">
-                            <input type="number" class="form-control" name="total_add" id="total_add"
-                                   placeholder="العدد الكلى"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
-                    <button type="button" class="btn btn-primary" id="btn_add">إضافة</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 {% endblock body %}
 
 
-{% block javascript %}
-    <script>
-        var delete_id;
-        var update_id;
-        var updated_item;
 
-        $(() => {
-            $('i.sara_edit').click(function () {
-                update_id = $(this).attr('id');
-                $.ajax({
-                    method: 'POST',
-                    url: '{% url 'get_unit' %}',
-                    data: {
-                        'id': update_id,
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        console.log(data.data)
-                        var JsData = JSON.parse(data.data)
-                        updated_item = JsData[0].fields
-                        $("#name_up").val(`${updated_item.total.code.name}`);
-                        $("#status_up").val(`${updated_item.status}`);
-                        $("#code_up").val(`${updated_item.total.code.name}`);
-                        $("#total_up").val(`${updated_item.total}`);
-
-                    },
-                    error: function (error) {
-                        alert(error.responseText)
-                    }
-                });
-
-            });
-
-            $('i.sara_delete').click(function () {
-                delete_id = $(this).attr('id');
-                console.log("delete", delete_id);
-
-            });
-            $("#btn_delete").on('click', e => {
-                $.ajax({
-                    method: 'POST',
-                    url: '{% url 'delete_unit' %}',
-                    data: {
-                        'id': delete_id,
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        if (data.data === 1) {
-                            swal({
-                                title: "تم",
-                                text: "تم  بنجاح",
-                                icon: "success",
-                                button: "إغلاق",
-                            });
-                            window.location.href = "{% url 'all-units' %}"
-                        } else {
-                            swal({
-                                title: "خطا",
-                                text: "من فضلك راجع البيانات",
-                                icon: "error",
-                                button: "إغلاق",
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        alert(error.responseText)
-                    }
-                });
-            });
-            $("#btn_update").on('click', event => {
-                event.preventDefault();
-                $.ajax({
-                    method: 'POST',
-                    url: '{% url 'update_unit' %}',
-                    data: {
-                        'update_id': update_id,
-                        'name': $("#name_up").val(),
-                        'status': $("#status_up").val(),
-                                                'code': $("#code_up").val(),
-                        'total': $("#total_up").val(),
-
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        if (data.data === 1) {
-                            swal({
-                                title: "تم",
-                                text: "تم  بنجاح",
-                                icon: "success",
-                                button: "إغلاق",
-                            });
-                            window.location.href = "{% url 'all-units' %}"
-                        } else {
-                            swal({
-                                title: "خطا",
-                                text: "من فضلك راجع البيانات",
-                                icon: "error",
-                                button: "إغلاق",
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        alert(error.responseText)
-                    }
-                });
-
-            });
-
-            $("#btn_add").on('click', e => {
-                e.preventDefault();
-                $.ajax({
-                    method: 'POST',
-                    url: '{% url 'create_unit' %}',
-                    data: {
-                        'name': $("#name_add").val(),
-                        'status': $("#status_add").val(),
-                                                'code': $("#code_add").val(),
-                        'total': $("#total_add").val(),
-
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        if (data.data === 1) {
-                            swal({
-                                title: "تم",
-                                text: "تم  بنجاح",
-                                icon: "success",
-                                button: "إغلاق",
-                            });
-                            window.location.href = "{% url 'all-units'  %}"
-                        } else {
-                            swal({
-                                title: "خطا",
-                                text: "من فضلك راجع البيانات",
-                                icon: "error",
-                                button: "إغلاق",
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        alert(error.responseText)
-                    }
-                });
-
-            })
-
-        });
-
-    </script>
-
-{% endblock javascript %}
